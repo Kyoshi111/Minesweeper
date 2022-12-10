@@ -2,15 +2,16 @@ using UnityEngine;
 
 public struct Cell
 {
-    public enum Type
+    public enum CellType
     {
         Empty,
         Mine,
-        Number
+        Number,
+        Flag
     }
     
-    public Vector2 Position { get; set; }
-    public Type State { get; set; }
+    public Vector3Int Position { get; set; }
+    public CellType Type { get; set; }
     public int MinesAround { get; set; }
     public bool Flagged { get; set; }
     public bool Exploded { get; set; }

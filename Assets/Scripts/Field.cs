@@ -5,9 +5,9 @@ using UnityEngine.Tilemaps;
 
 public class Field
 {
-    private readonly int width;
-    private readonly int height;
-    private readonly int minesCount;
+    public readonly int Width;
+    public readonly int Height;
+    public readonly int MinesCount;
     private readonly Cell[,] cells;
 
     public Cell this[int x, int y]
@@ -18,29 +18,31 @@ public class Field
 
     public Field(int width, int height, int minesCount)
     {
-        this.width = width;
-        this.height = height;
-        this.minesCount = minesCount;
+        this.Width = width;
+        this.Height = height;
+        this.MinesCount = minesCount;
         cells = new Cell[width, height];
         
         GenerateCells();
+        GenerateMines();
+        GenerateNumbers();
     }
 
     private void GenerateCells()
     {
-        for (var x = 0; x < width; x++)
+        for (var x = 0; x < Width; x++)
         {
-            for (var y = 0; y < height; y++)
+            for (var y = 0; y < Height; y++)
             {
                 cells[x, y] =
                     new Cell()
                     {
-                        Position = new Vector2(x, y),
+                        Position = new Vector3Int(x, y, 0),
                         Exploded = false,
                         Flagged = false,
                         MinesAround = 0,
                         Revealed = false,
-                        State = Cell.Type.Empty
+                        Type = Cell.CellType.Empty
                     };
             }
         }
@@ -50,30 +52,30 @@ public class Field
     {
         var count = 0;
 
-        while (count != minesCount)
+        while (count != MinesCount)
         {
             var x = Random.Range(0, cells.GetLength(0));
             var y = Random.Range(0, cells.GetLength(1));
             
-            if (cells[x, y].State == Cell.Type.Mine)
+            if (cells[x, y].Type == Cell.CellType.Mine)
                 continue;
 
-            cells[x, y].State = Cell.Type.Mine;
+            cells[x, y].Type = Cell.CellType.Mine;
             count++;
         }
     }
 
     private void GenerateNumbers()
     {
-        for (var x = 0; x < width; x++)
+        for (var x = 0; x < Width; x++)
         {
-            for (var y = 0; y < height; y++)
+            for (var y = 0; y < Height; y++)
             {
                 var minesAround = CountMines(x, y);
 
                 if (minesAround <= 0) continue;
                 
-                cells[x, y].State = Cell.Type.Number;
+                cells[x, y].Type = Cell.CellType.Number;
                 cells[x, y].MinesAround = minesAround;
             }
         }
@@ -88,12 +90,12 @@ public class Field
             {
                 if ((i == 0 && j == 0) ||
                     x + i < 0 ||
-                    x + i >= width ||
+                    x + i >= Width ||
                     y + j < 0 ||
                     y + j >= cells.GetLength(1))
                     continue;
 
-                if (cells[x + i, y + j].State == Cell.Type.Mine) minesAround++;
+                if (cells[x + i, y + j].Type == Cell.CellType.Mine) minesAround++;
             }
         }
 
