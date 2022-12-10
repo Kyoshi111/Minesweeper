@@ -34,7 +34,7 @@ TextureImporter:
     second: 8
   - first:
       213: -2950032572879587788
-    second: Fla
+    second: Flag
   - first:
       213: -7263262467203474343
     second: Mine
@@ -356,7 +356,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Fla
+      name: Flag
       rect:
         serializedVersion: 2
         x: 320
