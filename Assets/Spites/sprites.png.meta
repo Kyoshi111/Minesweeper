@@ -40,7 +40,7 @@ TextureImporter:
     second: Mine
   - first:
       213: 7010617245534139418
-    second: Explode
+    second: Exploded
   - first:
       213: -7039003182478323700
     second: Exploded
@@ -398,7 +398,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Explode
+      name: Exploded
       rect:
         serializedVersion: 2
         x: 384
