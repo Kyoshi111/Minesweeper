@@ -4,10 +4,10 @@ public struct Cell
 {
     public enum CellType
     {
+        Unknown,
         Empty,
         Mine,
         Number,
-        Flag
     }
     
     public Vector3Int Position { get; set; }
