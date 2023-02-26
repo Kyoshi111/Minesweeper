@@ -1,8 +1,5 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Serialization;
 using UnityEngine.Tilemaps;
 
 public class TileSet : MonoBehaviour
@@ -40,6 +37,7 @@ public class TileSet : MonoBehaviour
     {
         return number switch
         {
+            0 => empty,
             1 => number1,
             2 => number2,
             3 => number3,
