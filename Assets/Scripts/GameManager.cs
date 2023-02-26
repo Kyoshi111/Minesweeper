@@ -18,7 +18,6 @@ public class GameManager : MonoBehaviour
         field = GetComponent<Field>();
         
         field.GenerateCells();
-        field.GenerateMines();
 
         Camera.main.transform.position = new Vector3((float)field.Width / 2, (float)field.Height / 2, -10);
         Camera.main.GetComponent<Camera>().orthographicSize = 10;
@@ -30,10 +29,13 @@ public class GameManager : MonoBehaviour
     {
         if (Input.touchCount == 0)
             return;
-        
+
         var touchPosition = Camera.main.ScreenToWorldPoint(Input.touches[0].position);
 
         var cell = field[(int)touchPosition.x, (int)touchPosition.y];
+        
+        if (!field.AreMinesGenerated)
+            field.GenerateMinesExcluding3X3At(cell);
 
         cell.Revealed = true;
         

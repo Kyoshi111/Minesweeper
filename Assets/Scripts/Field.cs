@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using Random = UnityEngine.Random;
@@ -29,7 +30,7 @@ public class Field : MonoBehaviour
         AreMinesGenerated = false;
     }
 
-    public void GenerateMines()
+    public void GenerateMinesExcluding3X3At(Cell cell)
     {
         var count = 0;
 
@@ -38,7 +39,9 @@ public class Field : MonoBehaviour
             var x = Random.Range(0, Width);
             var y = Random.Range(0, Height);
             
-            if (cells[x, y].Type == CellType.Mine)
+            if (cells[x, y].Type == CellType.Mine ||
+                Math.Abs(x - cell.Position.x) <= 1 ||
+                Math.Abs(y - cell.Position.y) <= 1)
                 continue;
 
             cells[x, y].Type = CellType.Mine;
