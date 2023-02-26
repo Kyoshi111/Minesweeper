@@ -2,7 +2,8 @@ using System;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
-public class TileSet : MonoBehaviour
+[CreateAssetMenu]
+public class TileSet : ScriptableObject
 {
     [SerializeField] private Tile unknown;
     [SerializeField] private Tile empty;

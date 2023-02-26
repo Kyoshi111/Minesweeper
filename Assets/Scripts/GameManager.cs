@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using Debug = System.Diagnostics.Debug;
 using Random = UnityEngine.Random;
 
 public class GameManager : MonoBehaviour
@@ -10,15 +11,18 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Field field;
     [SerializeField] private Tilemap tilemap;
     [SerializeField] private TileSet tileset;
+    [SerializeField] private Camera mainCamera;
 
     private void Start()
     {
         tilemap = FindObjectOfType<Tilemap>().GetComponent<Tilemap>();
-        tileset = FindObjectOfType<Tilemap>().GetComponent<TileSet>();
         field = GetComponent<Field>();
         
         field.GenerateMines();
-        
+
+        mainCamera.transform.position = new Vector3((float)field.Width / 2, (float)field.Height / 2, -10);
+        mainCamera.GetComponent<Camera>().orthographicSize = 10;
+
         DrawField();
     }
     
