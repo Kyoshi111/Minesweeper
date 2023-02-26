@@ -7,6 +7,7 @@ public class Field : MonoBehaviour
     [field: SerializeField] public int Width { get; private set; }
     [field: SerializeField] public int Height { get; private set; }
     [field: SerializeField] public int MinesCount { get; private set; }
+    [field: SerializeField] public bool AreMinesGenerated { get; private set; }
     private Cell[,] cells;
 
     public Cell this[int x, int y]
@@ -14,12 +15,19 @@ public class Field : MonoBehaviour
         get => cells[x, y];
         set => cells[x, y] = value;
     }
-
-    private void Start()
+    public void GenerateCells()
     {
-        GenerateCells();
+        cells = new Cell[Width, Height];
+        
+        for (var x = 0; x < Width; x++)
+        for (var y = 0; y < Height; y++)
+        {
+            cells[x, y] = new Cell(x, y);
+        }
+
+        AreMinesGenerated = false;
     }
-    
+
     public void GenerateMines()
     {
         var count = 0;
@@ -37,21 +45,10 @@ public class Field : MonoBehaviour
             
             IncreaseNumbersAround(x, y);
         }
-    }
 
-    private void GenerateCells()
-    {
-        cells = new Cell[Width, Height];
-        
-        for (var x = 0; x < Width; x++)
-        for (var y = 0; y < Height; y++)
-        {
-            cells[x, y] = new Cell(x, y);
-        }
+        AreMinesGenerated = true;
     }
     
-
-
     private void IncreaseNumbersAround(int x, int y)
     {
         for (var i = -1; i <= 1; i++)

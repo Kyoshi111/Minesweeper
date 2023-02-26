@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
-using Debug = System.Diagnostics.Debug;
 using Random = UnityEngine.Random;
 
 public class GameManager : MonoBehaviour
@@ -11,21 +10,33 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Field field;
     [SerializeField] private Tilemap tilemap;
     [SerializeField] private TileSet tileset;
-    [SerializeField] private Camera mainCamera;
 
     private void Start()
     {
         tilemap = FindObjectOfType<Tilemap>().GetComponent<Tilemap>();
         field = GetComponent<Field>();
         
+        field.GenerateCells();
         field.GenerateMines();
 
-        mainCamera.transform.position = new Vector3((float)field.Width / 2, (float)field.Height / 2, -10);
-        mainCamera.GetComponent<Camera>().orthographicSize = 10;
+        Camera.main.transform.position = new Vector3((float)field.Width / 2, (float)field.Height / 2, -10);
+        Camera.main.GetComponent<Camera>().orthographicSize = 10;
 
         DrawField();
     }
-    
+
+    private void Update()
+    {
+        if (Input.touchCount == 0)
+            return;
+        
+        var touchPosition = Camera.main.ScreenToWorldPoint(Input.touches[0].position);
+
+        var cell = field[(int)touchPosition.x, (int)touchPosition.y];
+        
+        Debug.Log($"{cell.Position}\t{cell.Type}\t{cell.MinesAround}");
+    }
+
     private void DrawField()
     {
         for (var x = 0; x < field.Width; x++)
