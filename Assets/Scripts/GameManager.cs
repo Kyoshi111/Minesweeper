@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using Random = UnityEngine.Random;
@@ -33,6 +34,10 @@ public class GameManager : MonoBehaviour
         var touchPosition = Camera.main.ScreenToWorldPoint(Input.touches[0].position);
 
         var cell = field[(int)touchPosition.x, (int)touchPosition.y];
+
+        cell.Revealed = true;
+        
+        DrawCell(cell);
         
         Debug.Log($"{cell.Position}\t{cell.Type}\t{cell.MinesAround}");
     }
@@ -41,6 +46,14 @@ public class GameManager : MonoBehaviour
     {
         for (var x = 0; x < field.Width; x++)
         for (var y = 0; y < field.Height; y++)
-            tilemap.SetTile(field[x, y].Position, tileset.GetTile(field[x, y]));
+        {
+            var cell = field[x, y];
+            DrawCell(cell);
+        }
+    }
+
+    private void DrawCell(Cell cell)
+    {
+        tilemap.SetTile(cell.Position, cell.Revealed ? tileset.GetTile(cell) : tileset.Unknown);
     }
 }

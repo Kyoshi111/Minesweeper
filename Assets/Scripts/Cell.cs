@@ -9,16 +9,10 @@ public struct Cell
         Flagged = false;
         MinesAround = 0;
         Revealed = false;
-        Type = Cell.CellType.Empty;
+        Type = CellType.Empty;
     }
     
-    public enum CellType
-    {
-        Unknown,
-        Empty,
-        Mine,
-        Number,
-    }
+    
     
     public Vector3Int Position { get; set; }
     public CellType Type { get; set; }

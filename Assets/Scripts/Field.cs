@@ -15,6 +15,7 @@ public class Field : MonoBehaviour
         get => cells[x, y];
         set => cells[x, y] = value;
     }
+    
     public void GenerateCells()
     {
         cells = new Cell[Width, Height];
@@ -37,10 +38,10 @@ public class Field : MonoBehaviour
             var x = Random.Range(0, Width);
             var y = Random.Range(0, Height);
             
-            if (cells[x, y].Type == Cell.CellType.Mine)
+            if (cells[x, y].Type == CellType.Mine)
                 continue;
 
-            cells[x, y].Type = Cell.CellType.Mine;
+            cells[x, y].Type = CellType.Mine;
             count++;
             
             IncreaseNumbersAround(x, y);
@@ -56,11 +57,11 @@ public class Field : MonoBehaviour
         {
             if ((i == 0 && j == 0) ||
                 !AreValidCoordinates(x + i, y + j) ||
-                cells[x + i, y + j].Type == Cell.CellType.Mine)
+                cells[x + i, y + j].Type == CellType.Mine)
                 continue;
 
-            if (cells[x + i, y + j].Type == Cell.CellType.Empty)
-                cells[x + i, y + j].Type = Cell.CellType.Number;
+            if (cells[x + i, y + j].Type == CellType.Empty)
+                cells[x + i, y + j].Type = CellType.Number;
 
             cells[x + i, y + j].MinesAround++;
         }

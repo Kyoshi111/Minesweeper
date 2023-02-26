@@ -5,6 +5,7 @@ using UnityEngine.Tilemaps;
 [CreateAssetMenu]
 public class TileSet : ScriptableObject
 {
+    public Tile Unknown => unknown;
     [SerializeField] private Tile unknown;
     [SerializeField] private Tile empty;
     [SerializeField] private Tile number1;
@@ -26,10 +27,10 @@ public class TileSet : ScriptableObject
         
         return cell.Type switch
         {
-            Cell.CellType.Unknown => unknown,
-            Cell.CellType.Empty => empty,
-            Cell.CellType.Mine => mine,
-            Cell.CellType.Number => GetTileNumber(cell.MinesAround),
+            CellType.Unknown => unknown,
+            CellType.Empty => empty,
+            CellType.Mine => mine,
+            CellType.Number => GetTileNumber(cell.MinesAround),
             _ => throw new ArgumentOutOfRangeException()
         };
     }
