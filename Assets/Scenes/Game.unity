@@ -279,9 +279,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b80b8de3a706bf243ae33bad31982dcf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  <FieldWidth>k__BackingField: 20
-  <FieldHeight>k__BackingField: 0
-  <MinesCount>k__BackingField: 5
 --- !u!4 &1596687132
 Transform:
   m_ObjectHideFlags: 0
@@ -307,6 +304,8 @@ GameObject:
   - component: {fileID: 1911055274}
   - component: {fileID: 1911055276}
   - component: {fileID: 1911055275}
+  - component: {fileID: 1911055277}
+  - component: {fileID: 1911055278}
   m_Layer: 0
   m_Name: Tilemap
   m_TagString: Untagged
@@ -414,3 +413,43 @@ Tilemap:
     e31: 0
     e32: 0
     e33: 1
+--- !u!114 &1911055277
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1911055273}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 72242ca9fe922c7488ffd509f9e4d467, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <Width>k__BackingField: 20
+  <Height>k__BackingField: 20
+  <MinesCount>k__BackingField: 20
+--- !u!114 &1911055278
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1911055273}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 658c305d4d3c8c84cb5dc122395dae1e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tileUnknown: {fileID: 11400000, guid: f02e532796fafea4798951bfdb73686e, type: 2}
+  tileEmpty: {fileID: 11400000, guid: 7bc535999c69d7646820fa3f3602f826, type: 2}
+  tile1: {fileID: 11400000, guid: 2247c92951a704a4d9ae3ff49c59acc2, type: 2}
+  tile2: {fileID: 11400000, guid: 4d72832845920ee4b92a13025e6bcc7c, type: 2}
+  tile3: {fileID: 11400000, guid: cec3d3f546dbece4fba96e1caaed0a7c, type: 2}
+  tile4: {fileID: 11400000, guid: d69ef669a8f417e4b8a7ca9e5d242eda, type: 2}
+  tile5: {fileID: 11400000, guid: f2962d340068e4745b6c8042d1670e97, type: 2}
+  tile6: {fileID: 11400000, guid: ccb5bed1e901a6144a077ee6b70737c4, type: 2}
+  tile7: {fileID: 11400000, guid: 212afb06af747ab4c8494de2695f746c, type: 2}
+  tile8: {fileID: 11400000, guid: 6367c6a26571ef54d9cfbda4e8ea900a, type: 2}
+  tileFlag: {fileID: 11400000, guid: 682034f91663f744690f0012a01daecb, type: 2}
+  tileMine: {fileID: 11400000, guid: 05b8e5755e0ed19479af0b6cab3e263e, type: 2}
+  tileExploded: {fileID: 11400000, guid: dcf3b6f536d7a1c48b33f1e83cd477c6, type: 2}
