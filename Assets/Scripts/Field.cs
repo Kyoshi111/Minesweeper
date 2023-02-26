@@ -13,6 +13,12 @@ public class Field : MonoBehaviour
     private Cell[,] cells;
     private Tilemap tilemap;
     private TileSet tileSet;
+    
+    public Cell this[int x, int y]
+    {
+        get => cells[x, y];
+        set => cells[x, y] = value;
+    }
 
     private void Start()
     {
@@ -35,7 +41,7 @@ public class Field : MonoBehaviour
     {
         GenerateCells();
         GenerateMines();
-        GenerateNumbers();
+        //GenerateNumbers();
     }
 
     private void GenerateCells()
@@ -45,15 +51,7 @@ public class Field : MonoBehaviour
         for (var x = 0; x < Width; x++)
         for (var y = 0; y < Height; y++)
         {
-            cells[x, y] = new Cell
-                {
-                    Position = new Vector3Int(x, y, 0),
-                    Exploded = false,
-                    Flagged = false,
-                    MinesAround = 0,
-                    Revealed = false,
-                    Type = Cell.CellType.Empty
-                };
+            cells[x, y] = new Cell(x, y);
         }
     }
     
@@ -63,14 +61,33 @@ public class Field : MonoBehaviour
 
         while (count != MinesCount)
         {
-            var x = Random.Range(0, cells.GetLength(0));
-            var y = Random.Range(0, cells.GetLength(1));
+            var x = Random.Range(0, Width);
+            var y = Random.Range(0, Height);
             
             if (cells[x, y].Type == Cell.CellType.Mine)
                 continue;
 
             cells[x, y].Type = Cell.CellType.Mine;
             count++;
+            
+            IncreaseNumbersAround(x, y);
+        }
+    }
+
+    private void IncreaseNumbersAround(int x, int y)
+    {
+        for (var i = -1; i <= 1; i++)
+        for (var j = -1; j <= 1; j++)
+        {
+            if ((i == 0 && j == 0) ||
+                !AreValidCoordinates(x + i, y + j) ||
+                cells[x + i, y + j].Type == Cell.CellType.Mine)
+                continue;
+
+            if (cells[x + i, y + j].Type == Cell.CellType.Empty)
+                cells[x + i, y + j].Type = Cell.CellType.Number;
+
+            cells[x + i, y + j].MinesAround++;
         }
     }
 
@@ -81,7 +98,7 @@ public class Field : MonoBehaviour
         {
             var minesAround = CountMines(x, y);
 
-            if (minesAround <= 0) continue;
+            if (minesAround == 0) continue;
             
             cells[x, y].Type = Cell.CellType.Number;
             cells[x, y].MinesAround = minesAround;
@@ -96,21 +113,18 @@ public class Field : MonoBehaviour
         for (var j = -1; j <= 1; j++)
         {
             if ((i == 0 && j == 0) ||
-                x + i < 0 ||
-                x + i >= Width ||
-                y + j < 0 ||
-                y + j >= cells.GetLength(1))
+                !AreValidCoordinates(x + i, y + j) ||
+                cells[x + i, y + j].Type != Cell.CellType.Mine)
                 continue;
 
-            if (cells[x + i, y + j].Type == Cell.CellType.Mine) minesAround++;
+            minesAround++;
         }
 
         return minesAround;
     }
-    
-    public Cell this[int x, int y]
+
+    private bool AreValidCoordinates(int x, int y)
     {
-        get => cells[x, y];
-        set => cells[x, y] = value;
+        return x >= 0 && y >= 0 && x < Width && y < Height;
     }
 }

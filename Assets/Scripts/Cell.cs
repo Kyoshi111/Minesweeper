@@ -2,6 +2,16 @@ using UnityEngine;
 
 public struct Cell
 {
+    public Cell(int x, int y)
+    {
+        Position = new Vector3Int(x, y, 0);
+        Exploded = false;
+        Flagged = false;
+        MinesAround = 0;
+        Revealed = false;
+        Type = Cell.CellType.Empty;
+    }
+    
     public enum CellType
     {
         Unknown,
