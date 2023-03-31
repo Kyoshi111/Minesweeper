@@ -5,19 +5,17 @@ public struct Cell
     public Cell(int x, int y)
     {
         Position = new Vector3Int(x, y, 0);
-        Exploded = false;
-        Flagged = false;
+        IsExploded = false;
+        IsFlagged = false;
+        HasMine = false;
         MinesAround = 0;
-        Revealed = false;
-        Type = CellType.Empty;
+        IsRevealed = false;
     }
-    
-    
-    
+
     public Vector3Int Position { get; set; }
-    public CellType Type { get; set; }
     public int MinesAround { get; set; }
-    public bool Flagged { get; set; }
-    public bool Exploded { get; set; }
-    public bool Revealed { get; set; }
+    public bool IsFlagged { get; set; }
+    public bool HasMine { get; set; }
+    public bool IsExploded { get; set; }
+    public bool IsRevealed { get; set; }
 }

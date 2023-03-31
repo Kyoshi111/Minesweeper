@@ -17,31 +17,31 @@ public class GameManager : MonoBehaviour
         tilemap = FindObjectOfType<Tilemap>().GetComponent<Tilemap>();
         field = GetComponent<Field>();
         
-        field.GenerateCells();
+        field.StartGame();
 
-        Camera.main.transform.position = new Vector3((float)field.Width / 2, (float)field.Height / 2, -10);
-        Camera.main.GetComponent<Camera>().orthographicSize = 10;
+        if (Camera.main != null)
+        {
+            Camera.main.transform.position = new Vector3((float)field.Width / 2, (float)field.Height / 2, -10);
+            Camera.main.GetComponent<Camera>().orthographicSize = 10;
+        }
 
         DrawField();
     }
 
     private void Update()
     {
-        if (Input.touchCount == 0)
+        if (Camera.main == null || Input.touchCount == 0)
             return;
 
         var touchPosition = Camera.main.ScreenToWorldPoint(Input.touches[0].position);
+        var cellX = (int)touchPosition.x;
+        var cellY = (int)touchPosition.y;
 
-        var cell = field[(int)touchPosition.x, (int)touchPosition.y];
+        field.Reveal(cellX, cellY);
         
-        if (!field.AreMinesGenerated)
-            field.GenerateMinesExcluding3X3At(cell);
+        //Debug.Log($"x = {cellX}, y = {cellY}, IsRevealed = {field.IsRevealed(cellX, cellY)}");
 
-        cell.Revealed = true;
-        
-        DrawCell(cell);
-        
-        Debug.Log($"{cell.Position}\t{cell.Type}\t{cell.MinesAround}");
+        DrawField();
     }
 
     private void DrawField()
@@ -49,13 +49,7 @@ public class GameManager : MonoBehaviour
         for (var x = 0; x < field.Width; x++)
         for (var y = 0; y < field.Height; y++)
         {
-            var cell = field[x, y];
-            DrawCell(cell);
+            tilemap.SetTile(new Vector3Int(x, y, 0), tileset.GetTile(field, x, y));
         }
-    }
-
-    private void DrawCell(Cell cell)
-    {
-        tilemap.SetTile(cell.Position, cell.Revealed ? tileset.GetTile(cell) : tileset.Unknown);
     }
 }

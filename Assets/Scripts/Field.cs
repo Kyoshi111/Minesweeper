@@ -8,16 +8,31 @@ public class Field : MonoBehaviour
     [field: SerializeField] public int Width { get; private set; }
     [field: SerializeField] public int Height { get; private set; }
     [field: SerializeField] public int MinesCount { get; private set; }
-    [field: SerializeField] public bool AreMinesGenerated { get; private set; }
+    private bool areMinesGenerated;
     private Cell[,] cells;
 
-    public Cell this[int x, int y]
+    public int MinesAround(int cellX, int cellY) => cells[cellX, cellY].MinesAround;
+    public bool IsFlagged(int cellX, int cellY) => cells[cellX, cellY].IsFlagged;
+    public bool IsExploded(int cellX, int cellY) => cells[cellX, cellY].IsExploded;
+    public bool IsRevealed(int cellX, int cellY) => cells[cellX, cellY].IsRevealed;
+    public bool HasMine(int cellX, int cellY) => cells[cellX, cellY].HasMine;
+
+    public void StartGame()
     {
-        get => cells[x, y];
-        set => cells[x, y] = value;
+        GenerateCells();
     }
     
-    public void GenerateCells()
+    public void Reveal(int cellX, int cellY)
+    {
+        cells[cellX, cellY].IsRevealed = true;
+        
+        if (!areMinesGenerated) GenerateMinesExcluding3X3At(cellY, cellY);
+
+        if (cells[cellX, cellY].HasMine) Explode();
+        if (cells[cellX, cellY].MinesAround == 0) RevealEmptyCellsAround(cellY, cellY);
+    }
+    
+    private void GenerateCells()
     {
         cells = new Cell[Width, Height];
         
@@ -27,10 +42,33 @@ public class Field : MonoBehaviour
             cells[x, y] = new Cell(x, y);
         }
 
-        AreMinesGenerated = false;
+        areMinesGenerated = false;
     }
 
-    public void GenerateMinesExcluding3X3At(Cell cell)
+    private void RevealEmptyCellsAround(int cellX, int cellY)
+    {
+        for (var i = -1; i <= 1; i++)
+        for (var j = -1; j <= 1; j++)
+        {
+            if (!AreValidCoordinates(cellX + i, cellY + j) ||
+                cells[cellX + i, cellY + j].IsRevealed ||
+                cells[cellX + i, cellY + j].IsFlagged ||
+                cells[cellX + i, cellY + j].HasMine)
+                continue;
+
+            cells[cellX + i, cellY + j].IsRevealed = true;
+            
+            if (cells[cellX + i, cellY + j].MinesAround == 0)
+                RevealEmptyCellsAround(cellX + i, cellY + j);
+        }
+    }
+
+    private void Explode()
+    {
+        throw new NotImplementedException();
+    }
+
+    private void GenerateMinesExcluding3X3At(int cellX, int cellY)
     {
         var count = 0;
 
@@ -39,34 +77,31 @@ public class Field : MonoBehaviour
             var x = Random.Range(0, Width);
             var y = Random.Range(0, Height);
             
-            if (cells[x, y].Type == CellType.Mine ||
-                Math.Abs(x - cell.Position.x) <= 1 ||
-                Math.Abs(y - cell.Position.y) <= 1)
+            if (cells[x, y].HasMine ||
+                Math.Abs(x - cellX) <= 1 ||
+                Math.Abs(y - cellY) <= 1)
                 continue;
 
-            cells[x, y].Type = CellType.Mine;
+            cells[x, y].HasMine = true;
             count++;
             
             IncreaseNumbersAround(x, y);
         }
 
-        AreMinesGenerated = true;
+        areMinesGenerated = true;
     }
     
-    private void IncreaseNumbersAround(int x, int y)
+    private void IncreaseNumbersAround(int cellX, int cellY)
     {
         for (var i = -1; i <= 1; i++)
         for (var j = -1; j <= 1; j++)
         {
             if ((i == 0 && j == 0) ||
-                !AreValidCoordinates(x + i, y + j) ||
-                cells[x + i, y + j].Type == CellType.Mine)
+                !AreValidCoordinates(cellX + i, cellY + j) ||
+                cells[cellX + i, cellY + j].HasMine)
                 continue;
 
-            if (cells[x + i, y + j].Type == CellType.Empty)
-                cells[x + i, y + j].Type = CellType.Number;
-
-            cells[x + i, y + j].MinesAround++;
+            cells[cellX + i, cellY + j].MinesAround++;
         }
     }
 

@@ -20,22 +20,16 @@ public class TileSet : ScriptableObject
     [SerializeField] private Tile mine;
     [SerializeField] private Tile exploded;
 
-    public Tile GetTile(Cell cell)
+    public Tile GetTile(Field field, int cellX, int cellY)
     {
-        if (cell.Flagged) return flag;
-        if (cell.Exploded) return exploded;
-        
-        return cell.Type switch
-        {
-            CellType.Unknown => unknown,
-            CellType.Empty => empty,
-            CellType.Mine => mine,
-            CellType.Number => GetTileNumber(cell.MinesAround),
-            _ => throw new ArgumentOutOfRangeException()
-        };
+        if (!field.IsRevealed(cellX, cellY)) return unknown;
+        if (field.HasMine(cellX, cellY)) return mine;
+        if (field.IsFlagged(cellX, cellY)) return flag;
+        if (field.IsExploded(cellX, cellY)) return exploded;
+        return GetNumberTile(field.MinesAround(cellX, cellY));
     }
 
-    private Tile GetTileNumber(int number)
+    private Tile GetNumberTile(int number)
     {
         return number switch
         {
