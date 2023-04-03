@@ -24,8 +24,8 @@ public class TileSet : ScriptableObject
     {
         if (field.IsFlagged(cellX, cellY)) return flag;
         if (!field.IsRevealed(cellX, cellY)) return unknown;
-        if (field.HasMine(cellX, cellY)) return mine;
         if (field.IsExploded(cellX, cellY)) return exploded;
+        if (field.HasMine(cellX, cellY)) return mine;
         return GetNumberTile(field.MinesAround(cellX, cellY));
     }
 
