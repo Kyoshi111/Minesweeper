@@ -20,7 +20,7 @@
                     "id": "2b3b7280-8d76-4027-9e0e-473a3c75c276",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": "Tap",
+                    "interactions": "Tap(duration=0.15)",
                     "initialStateCheck": false
                 },
                 {
@@ -29,7 +29,7 @@
                     "id": "27b06089-8701-45f1-81f0-f1f88e04495e",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": "SlowTap",
+                    "interactions": "SlowTap(duration=0.3)",
                     "initialStateCheck": false
                 }
             ],
