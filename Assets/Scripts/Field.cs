@@ -37,7 +37,9 @@ public class Field : MonoBehaviour
     
     public void Reveal(int cellX, int cellY)
     {
-        if (!AreValidCoordinates(cellX, cellY)) return;
+        if (!AreValidCoordinates(cellX, cellY) ||
+            cells[cellX, cellY].IsFlagged)
+            return;
         
         if (!areMinesGenerated) GenerateMinesExcluding3X3At(cellX, cellY);
         
@@ -45,7 +47,7 @@ public class Field : MonoBehaviour
 
         if (cells[cellX, cellY].HasMine) Explode(cellX, cellY);
         
-        if (cells[cellX, cellY].MinesAround == 0) RevealEmptyCellsAround(cellX, cellY);
+        else if (cells[cellX, cellY].MinesAround == 0) RevealEmptyCellsAround(cellX, cellY);
     }
 
     private void RevealEmptyCellsAround(int cellX, int cellY)
