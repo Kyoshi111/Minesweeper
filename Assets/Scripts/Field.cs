@@ -21,17 +21,7 @@ public class Field : MonoBehaviour
     {
         GenerateCells();
     }
-    
-    public void Reveal(int cellX, int cellY)
-    {
-        cells[cellX, cellY].IsRevealed = true;
-        
-        if (!areMinesGenerated) GenerateMinesExcluding3X3At(cellY, cellY);
 
-        if (cells[cellX, cellY].HasMine) Explode();
-        if (cells[cellX, cellY].MinesAround == 0) RevealEmptyCellsAround(cellY, cellY);
-    }
-    
     private void GenerateCells()
     {
         cells = new Cell[Width, Height];
@@ -44,6 +34,19 @@ public class Field : MonoBehaviour
 
         areMinesGenerated = false;
     }
+    
+    public void Reveal(int cellX, int cellY)
+    {
+        if (!AreValidCoordinates(cellX, cellY)) return;
+        
+        if (!areMinesGenerated) GenerateMinesExcluding3X3At(cellX, cellY);
+        
+        cells[cellX, cellY].IsRevealed = true;
+
+        if (cells[cellX, cellY].HasMine) Explode();
+        
+        if (cells[cellX, cellY].MinesAround == 0) RevealEmptyCellsAround(cellX, cellY);
+    }
 
     private void RevealEmptyCellsAround(int cellX, int cellY)
     {
@@ -51,15 +54,10 @@ public class Field : MonoBehaviour
         for (var j = -1; j <= 1; j++)
         {
             if (!AreValidCoordinates(cellX + i, cellY + j) ||
-                cells[cellX + i, cellY + j].IsRevealed ||
-                cells[cellX + i, cellY + j].IsFlagged ||
-                cells[cellX + i, cellY + j].HasMine)
+                cells[cellX + i, cellY + j].IsRevealed)
                 continue;
-
-            cells[cellX + i, cellY + j].IsRevealed = true;
             
-            if (cells[cellX + i, cellY + j].MinesAround == 0)
-                RevealEmptyCellsAround(cellX + i, cellY + j);
+            Reveal(cellX + i, cellY + j);
         }
     }
 
