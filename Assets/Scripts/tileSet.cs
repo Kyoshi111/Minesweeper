@@ -22,9 +22,9 @@ public class TileSet : ScriptableObject
 
     public Tile GetTile(Field field, int cellX, int cellY)
     {
+        if (field.IsFlagged(cellX, cellY)) return flag;
         if (!field.IsRevealed(cellX, cellY)) return unknown;
         if (field.HasMine(cellX, cellY)) return mine;
-        if (field.IsFlagged(cellX, cellY)) return flag;
         if (field.IsExploded(cellX, cellY)) return exploded;
         return GetNumberTile(field.MinesAround(cellX, cellY));
     }
