@@ -78,15 +78,18 @@ public class Field : MonoBehaviour
 
         cells[cellX, cellY].IsExploded = true;
         
-        RevealAllField();
-    }
-
-    private void RevealAllField()
-    {
         for (var x = 0; x < Width; x++)
         for (var y = 0; y < Height; y++)
+        {
+            if (cells[x, y].IsFlagged &&
+                cells[x, y].HasMine)
+                cells[x, y].IsFlagged = false;
+            
             cells[x, y].IsRevealed = true;
+        }
     }
+
+
 
     private void GenerateMinesExcluding3X3At(int cellX, int cellY)
     {
