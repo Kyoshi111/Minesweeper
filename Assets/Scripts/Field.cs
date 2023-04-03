@@ -60,6 +60,17 @@ public class Field : MonoBehaviour
             Reveal(cellX + i, cellY + j);
         }
     }
+    
+    public void FlagOrUnflag(int cellX, int cellY)
+    {
+        if (!areMinesGenerated ||
+            !AreValidCoordinates(cellX, cellY) ||
+            cells[cellX, cellY].IsRevealed ||
+            cells[cellX, cellY].IsExploded)
+            return;
+        
+        cells[cellX, cellY].IsFlagged = !cells[cellX, cellY].IsFlagged;
+    }
 
     private void Explode()
     {
