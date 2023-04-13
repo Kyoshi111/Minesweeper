@@ -15,7 +15,12 @@ public struct Cell
     public Vector3Int Position { get; set; }
     public int MinesAround { get; set; }
     public bool IsFlagged { get; set; }
-    public bool HasMine { get; set; }
     public bool IsExploded { get; set; }
     public bool IsRevealed { get; set; }
+    public bool HasMine { get; set; }
+
+    public override string ToString()
+    {
+        return $"x: {Position.x}, y: {Position.y}, z: {Position.z}, MinesAround: {MinesAround}, IsFlagged: {IsFlagged}, IsExploded: {IsExploded}, IsRevealed: {IsRevealed}, HasMine: {HasMine}";
+    }
 }
