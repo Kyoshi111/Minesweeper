@@ -37,20 +37,17 @@ public class GameManager : Singleton<GameManager>
         field.StartGame();
 
         SetCameraOnCenter();
-    }
-
-    private void Update()
-    {
+        
         DrawField();
     }
 
     private void SlowTap(InputAction.CallbackContext context)
     {
         var cellPosition = ScreenPointToCellPosition(touchManager.touchPositionAction.ReadValue<Vector2>());
-        
-        
-        
+
         field.Reveal(cellPosition.x, cellPosition.y);
+        
+        DrawField();
     }
 
     private void Tap(InputAction.CallbackContext context)
@@ -61,6 +58,8 @@ public class GameManager : Singleton<GameManager>
             field.RevealAroundNumber(cellPosition.x, cellPosition.y);
         
         else field.FlagOrUnflag(cellPosition.x, cellPosition.y);
+        
+        DrawField();
     }
 
     private void SetCameraOnCenter()
