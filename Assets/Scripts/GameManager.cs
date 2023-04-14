@@ -10,6 +10,9 @@ public class GameManager : Singleton<GameManager>
     [SerializeField] private TileSet tileset;
     private TouchManager touchManager;
     private Camera mainCamera;
+    private Vector3 startTouchWorldPoint;
+    private Vector3 endTouchWorldPoint;
+    private bool isTouching;
 
     private void Awake()
     {
@@ -19,17 +22,20 @@ public class GameManager : Singleton<GameManager>
         mainCamera = Camera.main;
     }
 
-
     private void OnEnable()
     {
-        touchManager.touchSlowTapAction.performed += SlowTap;
-        touchManager.touchTapAction.performed += Tap;
+        touchManager.OnTap += Tap;
+        touchManager.OnSlowTap += SlowTap;
+        touchManager.OnStartTouch += StartTouch;
+        touchManager.OnEndTouch += EndTouch;
     }
 
     private void OnDisable()
     {
-        touchManager.touchSlowTapAction.performed -= SlowTap;
-        touchManager.touchTapAction.performed -= Tap;
+        touchManager.OnTap -= Tap;
+        touchManager.OnSlowTap -= SlowTap;
+        touchManager.OnStartTouch -= StartTouch;
+        touchManager.OnEndTouch -= EndTouch;
     }
 
     private void Start()
@@ -41,18 +47,19 @@ public class GameManager : Singleton<GameManager>
         DrawField();
     }
 
-    private void SlowTap(InputAction.CallbackContext context)
+    private void Update()
     {
-        var cellPosition = ScreenPointToCellPosition(touchManager.touchPositionAction.ReadValue<Vector2>());
-
-        field.Reveal(cellPosition.x, cellPosition.y);
-        
-        DrawField();
+        if (isTouching)
+        {
+            mainCamera.transform.position += startTouchWorldPoint - touchManager.TouchWorldPoint;
+        }
     }
-
-    private void Tap(InputAction.CallbackContext context)
+    
+    private void Tap(Vector3 worldPoint)
     {
-        var cellPosition = ScreenPointToCellPosition(touchManager.touchPositionAction.ReadValue<Vector2>());
+        if (worldPoint != startTouchWorldPoint) return;
+        
+        var cellPosition = WorldPointToCellPosition(worldPoint);
         
         if (field.IsRevealed(cellPosition.x, cellPosition.y))
             field.RevealAroundNumber(cellPosition.x, cellPosition.y);
@@ -62,16 +69,40 @@ public class GameManager : Singleton<GameManager>
         DrawField();
     }
 
+    private void SlowTap(Vector3 worldPoint)
+    {
+        if (worldPoint != startTouchWorldPoint) return;
+        
+        var cellPosition = WorldPointToCellPosition(worldPoint);
+
+        field.Reveal(cellPosition.x, cellPosition.y);
+        
+        DrawField();
+    }
+
+    private void StartTouch(Vector3 worldPoint, float time)
+    {
+        isTouching = true;
+        startTouchWorldPoint = worldPoint;
+    }
+    
+    private void EndTouch(Vector3 worldPoint, float time)
+    {
+        isTouching = false;
+        endTouchWorldPoint = worldPoint;
+
+        Debug.DrawLine(startTouchWorldPoint, endTouchWorldPoint, Color.red, 10.0f);
+    }
+
     private void SetCameraOnCenter()
     {
         mainCamera.transform.position = new Vector3((float)field.Width / 2, (float)field.Height / 2, -10);
         mainCamera.GetComponent<Camera>().orthographicSize = 10;
     }
 
-    private Vector3Int ScreenPointToCellPosition(Vector2 screenPoint)
+    private Vector3Int WorldPointToCellPosition(Vector2 worldPoint)
     {
-        var worldPosition = mainCamera.ScreenToWorldPoint(screenPoint);
-        return new Vector3Int((int)worldPosition.x, (int)worldPosition.y, (int)worldPosition.z);
+        return new Vector3Int((int)worldPoint.x, (int)worldPoint.y, (int)mainCamera.nearClipPlane);
     }
 
     private void DrawField()
