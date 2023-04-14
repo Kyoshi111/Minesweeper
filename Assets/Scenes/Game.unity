@@ -153,33 +153,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c8f7ac04b591c2e418d3841bf7f26f52, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  touchPositionAction:
-    m_Name: Touch Position
-    m_Type: 0
-    m_ExpectedControlType: 
-    m_Id: 6326082b-1941-4d5c-aa3b-1db26df33456
-    m_Processors: 
-    m_Interactions: 
-    m_SingletonActionBindings: []
-    m_Flags: 0
-  touchTapAction:
-    m_Name: Touch Tap
-    m_Type: 0
-    m_ExpectedControlType: 
-    m_Id: 2b256adb-7b05-489b-a41f-969645be256c
-    m_Processors: 
-    m_Interactions: 
-    m_SingletonActionBindings: []
-    m_Flags: 0
-  touchSlowTapAction:
-    m_Name: Touch Slow Tap
-    m_Type: 0
-    m_ExpectedControlType: 
-    m_Id: 187e9587-9f97-494d-84fd-54bfb3b4a71a
-    m_Processors: 
-    m_Interactions: 
-    m_SingletonActionBindings: []
-    m_Flags: 0
 --- !u!4 &70717467
 Transform:
   m_ObjectHideFlags: 0
@@ -410,9 +383,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 72242ca9fe922c7488ffd509f9e4d467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  <Width>k__BackingField: 10
-  <Height>k__BackingField: 20
-  <MinesCount>k__BackingField: 30
+  <Width>k__BackingField: 100
+  <Height>k__BackingField: 200
+  <MinesCount>k__BackingField: 3000
 --- !u!1 &1911055273
 GameObject:
   m_ObjectHideFlags: 0
