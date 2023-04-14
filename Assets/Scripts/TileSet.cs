@@ -5,7 +5,6 @@ using UnityEngine.Tilemaps;
 [CreateAssetMenu]
 public class TileSet : ScriptableObject
 {
-    public Tile Unknown => unknown;
     [SerializeField] private Tile unknown;
     [SerializeField] private Tile empty;
     [SerializeField] private Tile number1;
