@@ -22,14 +22,14 @@ public class GameManager : Singleton<GameManager>
 
     private void OnEnable()
     {
-        touchManager.touchSlowTapAction.performed += Reveal;
-        touchManager.touchTapAction.performed += FlagOrUnflag;
+        touchManager.touchSlowTapAction.performed += SlowTap;
+        touchManager.touchTapAction.performed += Tap;
     }
 
     private void OnDisable()
     {
-        touchManager.touchSlowTapAction.performed -= Reveal;
-        touchManager.touchTapAction.performed -= FlagOrUnflag;
+        touchManager.touchSlowTapAction.performed -= SlowTap;
+        touchManager.touchTapAction.performed -= Tap;
     }
 
     private void Start()
@@ -44,16 +44,23 @@ public class GameManager : Singleton<GameManager>
         DrawField();
     }
 
-    private void Reveal(InputAction.CallbackContext context)
+    private void SlowTap(InputAction.CallbackContext context)
     {
         var cellPosition = ScreenPointToCellPosition(touchManager.touchPositionAction.ReadValue<Vector2>());
+        
+        
+        
         field.Reveal(cellPosition.x, cellPosition.y);
     }
 
-    private void FlagOrUnflag(InputAction.CallbackContext context)
+    private void Tap(InputAction.CallbackContext context)
     {
         var cellPosition = ScreenPointToCellPosition(touchManager.touchPositionAction.ReadValue<Vector2>());
-        field.FlagOrUnflag(cellPosition.x, cellPosition.y);
+        
+        if (field.IsRevealed(cellPosition.x, cellPosition.y))
+            field.RevealAroundNumber(cellPosition.x, cellPosition.y);
+        
+        else field.FlagOrUnflag(cellPosition.x, cellPosition.y);
     }
 
     private void SetCameraOnCenter()

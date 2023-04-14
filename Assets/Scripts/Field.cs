@@ -1,6 +1,5 @@
 using System;
 using UnityEngine;
-using UnityEngine.Tilemaps;
 using Random = UnityEngine.Random;
 
 public class Field : MonoBehaviour
@@ -42,15 +41,38 @@ public class Field : MonoBehaviour
             return;
         
         if (!areMinesGenerated) GenerateMinesExcluding3X3At(cellX, cellY);
-        
+
         cells[cellX, cellY].IsRevealed = true;
 
         if (cells[cellX, cellY].HasMine) Explode(cellX, cellY);
         
-        else if (cells[cellX, cellY].MinesAround == 0) RevealEmptyCellsAround(cellX, cellY);
+        else if (cells[cellX, cellY].MinesAround == 0) RevealAround(cellX, cellY);
     }
 
-    private void RevealEmptyCellsAround(int cellX, int cellY)
+    public void RevealAroundNumber(int cellX, int cellY)
+    {
+        if (cells[cellX, cellY].IsRevealed && cells[cellX, cellY].MinesAround <= FlagsAround(cellX, cellY))
+        {
+            RevealAround(cellX, cellY);
+        }
+    }
+
+    private int FlagsAround(int cellX, int cellY)
+    {
+        var flagsAround = 0;
+        
+        for (var i = -1; i <= 1; i++)
+        for (var j = -1; j <= 1; j++)
+        {
+            if ((i, j) == (0, 0) || !AreValidCoordinates(cellX + i, cellY + j)) continue;
+
+            if (cells[cellX + i, cellY + j].IsFlagged) flagsAround++;
+        }
+
+        return flagsAround;
+    }
+
+    private void RevealAround(int cellX, int cellY)
     {
         for (var i = -1; i <= 1; i++)
         for (var j = -1; j <= 1; j++)
