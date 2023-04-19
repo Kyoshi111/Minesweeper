@@ -574,8 +574,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 36
-  m_fontSizeBase: 36
+  m_fontSize: 24
+  m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -783,8 +783,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 36
-  m_fontSizeBase: 36
+  m_fontSize: 24
+  m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -916,25 +916,13 @@ MonoBehaviour:
   m_FillRect: {fileID: 931405971}
   m_HandleRect: {fileID: 1562120739}
   m_Direction: 0
-  m_MinValue: 30
-  m_MaxValue: 12000
+  m_MinValue: 1
+  m_MaxValue: 500
   m_WholeNumbers: 1
   m_Value: 30
   m_OnValueChanged:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1920118089}
-        m_TargetAssemblyTypeName: SettingsMenu, Assembly-CSharp
-        m_MethodName: SetMinesCount
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!1 &372902681
 GameObject:
   m_ObjectHideFlags: 0
@@ -1849,25 +1837,13 @@ MonoBehaviour:
   m_FillRect: {fileID: 1783355341}
   m_HandleRect: {fileID: 66302635}
   m_Direction: 0
-  m_MinValue: 10
-  m_MaxValue: 200
+  m_MinValue: 9
+  m_MaxValue: 45
   m_WholeNumbers: 1
   m_Value: 10
   m_OnValueChanged:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1920118089}
-        m_TargetAssemblyTypeName: SettingsMenu, Assembly-CSharp
-        m_MethodName: SetFieldWidth
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!1 &840974209
 GameObject:
   m_ObjectHideFlags: 0
@@ -1952,8 +1928,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 36
-  m_fontSizeBase: 36
+  m_fontSize: 24
+  m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -2709,25 +2685,13 @@ MonoBehaviour:
   m_FillRect: {fileID: 286994465}
   m_HandleRect: {fileID: 1403398604}
   m_Direction: 0
-  m_MinValue: 20
-  m_MaxValue: 400
+  m_MinValue: 16
+  m_MaxValue: 80
   m_WholeNumbers: 1
   m_Value: 20
   m_OnValueChanged:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1920118089}
-        m_TargetAssemblyTypeName: SettingsMenu, Assembly-CSharp
-        m_MethodName: SetFieldHeight
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!1 &1403398603
 GameObject:
   m_ObjectHideFlags: 0
@@ -3400,6 +3364,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4b48038e4f79d0947bc1bcac31b9148c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  fieldWidthSlider: {fileID: 793036422}
+  fieldHeightSlider: {fileID: 1381521674}
+  minesCountSlider: {fileID: 366970706}
+  fieldWidthTextMeshPro: {fileID: 293667199}
+  fieldHeightTextMeshPro: {fileID: 264400964}
+  minesCountTextMeshPro: {fileID: 840974211}
 --- !u!1 &1969809973
 GameObject:
   m_ObjectHideFlags: 0

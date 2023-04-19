@@ -18,6 +18,11 @@ public class GameManager : Singleton<GameManager>
     {
         tilemap = FindObjectOfType<Tilemap>().GetComponent<Tilemap>();
         field = GetComponent<Field>();
+        field.TrySetParams(
+            PlayerPrefs.GetInt("Width", 9),
+            PlayerPrefs.GetInt("Height", 16),
+            PlayerPrefs.GetInt("MinesCount", 20)
+        );
         touchManager = TouchManager.Instance;
         mainCamera = Camera.main;
     }

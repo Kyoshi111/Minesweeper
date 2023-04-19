@@ -8,6 +8,7 @@ public class Field : MonoBehaviour
     [field: SerializeField] public int Height { get; private set; }
     [field: SerializeField] public int MinesCount { get; private set; }
     private bool areMinesGenerated;
+    private bool isGameStarted;
     private Cell[,] cells;
 
     public int MinesAround(int cellX, int cellY) => cells[cellX, cellY].MinesAround;
@@ -19,21 +20,20 @@ public class Field : MonoBehaviour
     public void StartGame()
     {
         GenerateCells();
+        isGameStarted = true;
     }
 
-    private void GenerateCells()
+    public bool TrySetParams(int width, int height, int minesCount)
     {
-        cells = new Cell[Width, Height];
-        
-        for (var x = 0; x < Width; x++)
-        for (var y = 0; y < Height; y++)
-        {
-            cells[x, y] = new Cell(x, y);
-        }
+        if (isGameStarted) return false;
 
-        areMinesGenerated = false;
+        Width = width;
+        Height = height;
+        MinesCount = minesCount;
+
+        return true;
     }
-    
+
     public void Reveal(int cellX, int cellY)
     {
         if (!AreValidCoordinates(cellX, cellY) ||
@@ -55,6 +55,19 @@ public class Field : MonoBehaviour
         {
             RevealAround(cellX, cellY);
         }
+    }
+    
+    private void GenerateCells()
+    {
+        cells = new Cell[Width, Height];
+        
+        for (var x = 0; x < Width; x++)
+        for (var y = 0; y < Height; y++)
+        {
+            cells[x, y] = new Cell(x, y);
+        }
+
+        areMinesGenerated = false;
     }
 
     private int FlagsAround(int cellX, int cellY)
@@ -111,9 +124,9 @@ public class Field : MonoBehaviour
             
             cells[x, y].IsRevealed = true;
         }
+
+        isGameStarted = false;
     }
-
-
 
     private void GenerateMinesExcluding3X3At(int cellX, int cellY)
     {
