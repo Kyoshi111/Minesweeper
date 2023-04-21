@@ -1,8 +1,6 @@
-using System;
 using TMPro;
 using UnityEngine;
-using UnityEngine.InputSystem;
-using UnityEngine.Serialization;
+using UnityEngine.SceneManagement;
 using UnityEngine.Tilemaps;
 
 public class GameManager : Singleton<GameManager>
@@ -10,13 +8,24 @@ public class GameManager : Singleton<GameManager>
     [SerializeField] private Field field;
     [SerializeField] private Tilemap tilemap;
     [SerializeField] private TileSet tileset;
-    [FormerlySerializedAs("minesFlagsCountTextMeshPro")] [SerializeField] private TextMeshProUGUI flagsMinesCountTextMeshPro;
+    [SerializeField] private TextMeshProUGUI flagsMinesCountTextMeshPro;
+    [SerializeField] private GameObject RestartMenu;
     private TouchManager touchManager;
     private Camera mainCamera;
     private Vector3 startTouchWorldPoint;
     private Vector3 endTouchWorldPoint;
     private bool isTouching;
     private bool isFirstTouch = true;
+
+    public void Restart()
+    {
+        SceneManager.LoadScene("Game");
+    }
+
+    public void Exit()
+    {
+        SceneManager.LoadScene("Menu");
+    }
 
     private void Awake()
     {
@@ -54,6 +63,8 @@ public class GameManager : Singleton<GameManager>
         SetCameraOnCenter();
         
         DrawField();
+
+        RestartMenu.SetActive(false);
     }
 
     private void Update()
@@ -61,6 +72,11 @@ public class GameManager : Singleton<GameManager>
         if (isTouching)
         {
             mainCamera.transform.position += startTouchWorldPoint - touchManager.TouchWorldPoint;
+        }
+
+        if (!field.IsGameStarted)
+        {
+            RestartMenu.SetActive(true);
         }
     }
     

@@ -8,8 +8,8 @@ public class Field : MonoBehaviour
     [field: SerializeField] public int Height { get; private set; }
     [field: SerializeField] public int MinesCount { get; private set; }
     [field: SerializeField] public int FlagsCount { get; private set; }
+    [field: SerializeField] public bool IsGameStarted { get; private set; }
     private bool areMinesGenerated;
-    private bool isGameStarted;
     private Cell[,] cells;
 
     public int MinesAround(int cellX, int cellY) => cells[cellX, cellY].MinesAround;
@@ -21,13 +21,13 @@ public class Field : MonoBehaviour
     public void StartGame()
     {
         GenerateCells();
-        isGameStarted = true;
+        IsGameStarted = true;
         areMinesGenerated = false;
     }
 
     public bool TrySetParams(int width, int height, int minesCount)
     {
-        if (isGameStarted) return false;
+        if (IsGameStarted) return false;
 
         Width = width;
         Height = height;
@@ -136,7 +136,7 @@ public class Field : MonoBehaviour
             cells[x, y].IsRevealed = true;
         }
 
-        isGameStarted = false;
+        IsGameStarted = false;
     }
 
     private void GenerateMinesExcluding3X3At(int cellX, int cellY)
