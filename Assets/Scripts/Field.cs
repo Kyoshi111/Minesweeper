@@ -22,6 +22,7 @@ public class Field : MonoBehaviour
     {
         GenerateCells();
         isGameStarted = true;
+        areMinesGenerated = false;
     }
 
     public bool TrySetParams(int width, int height, int minesCount)

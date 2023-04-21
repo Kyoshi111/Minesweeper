@@ -16,6 +16,7 @@ public class GameManager : Singleton<GameManager>
     private Vector3 startTouchWorldPoint;
     private Vector3 endTouchWorldPoint;
     private bool isTouching;
+    private bool isFirstTouch = true;
 
     private void Awake()
     {
@@ -65,6 +66,13 @@ public class GameManager : Singleton<GameManager>
     
     private void Tap(Vector3 worldPoint)
     {
+        if (isFirstTouch)
+        {
+            isFirstTouch = false;
+            SlowTap(worldPoint);
+            return;
+        }
+        
         if (worldPoint != startTouchWorldPoint) return;
         
         var cellPosition = WorldPointToCellPosition(worldPoint);
@@ -79,6 +87,8 @@ public class GameManager : Singleton<GameManager>
 
     private void SlowTap(Vector3 worldPoint)
     {
+        if (isFirstTouch) return;
+        
         if (worldPoint != startTouchWorldPoint) return;
         
         var cellPosition = WorldPointToCellPosition(worldPoint);
