@@ -7,6 +7,7 @@ public class Field : MonoBehaviour
     [field: SerializeField] public int Width { get; private set; }
     [field: SerializeField] public int Height { get; private set; }
     [field: SerializeField] public int MinesCount { get; private set; }
+    [field: SerializeField] public int FlagsCount { get; private set; }
     private bool areMinesGenerated;
     private bool isGameStarted;
     private Cell[,] cells;
@@ -105,8 +106,17 @@ public class Field : MonoBehaviour
             cells[cellX, cellY].IsRevealed ||
             cells[cellX, cellY].IsExploded)
             return;
-        
-        cells[cellX, cellY].IsFlagged = !cells[cellX, cellY].IsFlagged;
+
+        if (cells[cellX, cellY].IsFlagged)
+        {
+            cells[cellX, cellY].IsFlagged = false;
+            FlagsCount--;
+        }
+        else
+        {
+            cells[cellX, cellY].IsFlagged = true;
+            FlagsCount++;
+        }
     }
 
     private void Explode(int cellX, int cellY)

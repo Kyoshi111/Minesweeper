@@ -1,6 +1,8 @@
 using System;
+using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Serialization;
 using UnityEngine.Tilemaps;
 
 public class GameManager : Singleton<GameManager>
@@ -8,6 +10,7 @@ public class GameManager : Singleton<GameManager>
     [SerializeField] private Field field;
     [SerializeField] private Tilemap tilemap;
     [SerializeField] private TileSet tileset;
+    [FormerlySerializedAs("minesFlagsCountTextMeshPro")] [SerializeField] private TextMeshProUGUI flagsMinesCountTextMeshPro;
     private TouchManager touchManager;
     private Camera mainCamera;
     private Vector3 startTouchWorldPoint;
@@ -117,5 +120,7 @@ public class GameManager : Singleton<GameManager>
         {
             tilemap.SetTile(new Vector3Int(x, y, 0), tileset.GetTile(field, x, y));
         }
+
+        flagsMinesCountTextMeshPro.text = $"{field.FlagsCount}/{field.MinesCount}";
     }
 }
