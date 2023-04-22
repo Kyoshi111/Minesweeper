@@ -149,8 +149,7 @@ public class Field : MonoBehaviour
             var y = Random.Range(0, Height);
             
             if (cells[x, y].HasMine ||
-                Math.Abs(x - cellX) <= 1 ||
-                Math.Abs(y - cellY) <= 1)
+                (Math.Abs(x - cellX) <= 1 && Math.Abs(y - cellY) <= 1))
                 continue;
 
             cells[x, y].HasMine = true;
