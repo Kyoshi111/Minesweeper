@@ -1,6 +1,9 @@
+using System.Collections;
+using System.Globalization;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.Serialization;
 using UnityEngine.Tilemaps;
 
 public class GameManager : Singleton<GameManager>
@@ -9,13 +12,20 @@ public class GameManager : Singleton<GameManager>
     [SerializeField] private Tilemap tilemap;
     [SerializeField] private TileSet tileset;
     [SerializeField] private TextMeshProUGUI flagsMinesCountTextMeshPro;
-    [SerializeField] private GameObject RestartMenu;
+    [SerializeField] private TextMeshProUGUI startTitle;
+    [SerializeField] private TextMeshProUGUI zoomSensitivityTitle;
+    [SerializeField] private GameObject gameOverMenu;
+    [SerializeField] private float zoomMin;
+    [SerializeField] private float zoomMax;
+    [SerializeField] private float zoomSensitivity;
     private TouchManager touchManager;
     private Camera mainCamera;
-    private Vector3 startTouchWorldPoint;
-    private Vector3 endTouchWorldPoint;
-    private bool isTouching;
+    private Vector3 startPrimaryTouchWorldPoint;
+    private Vector3 startSecondaryTouchWorldPoint;
+    private bool isPrimaryTouching;
+    private bool isSecondaryTouching;
     private bool isFirstTouch = true;
+    private Coroutine zoomCoroutine;
 
     public void Restart()
     {
@@ -27,6 +37,11 @@ public class GameManager : Singleton<GameManager>
         SceneManager.LoadScene("Menu");
     }
 
+    public void SetZoomSensitivity(float sensitivity)
+    {
+        zoomSensitivity = sensitivity;
+        zoomSensitivityTitle.text = zoomSensitivity.ToString(CultureInfo.InvariantCulture);
+    }
     private void Awake()
     {
         tilemap = FindObjectOfType<Tilemap>().GetComponent<Tilemap>();
@@ -42,18 +57,26 @@ public class GameManager : Singleton<GameManager>
 
     private void OnEnable()
     {
-        touchManager.OnTap += Tap;
-        touchManager.OnSlowTap += SlowTap;
-        touchManager.OnStartTouch += StartTouch;
-        touchManager.OnEndTouch += EndTouch;
+        touchManager.OnPrimaryTap += PrimaryTap;
+        touchManager.OnPrimarySlowTap += PrimarySlowTap;
+        touchManager.OnStartPrimaryTouch += StartPrimaryTouch;
+        touchManager.OnEndPrimaryTouch += EndPrimaryTouch;
+        touchManager.OnStartSecondaryTouch += StartSecondaryTouch;
+        touchManager.OnEndSecondaryTouch += EndSecondaryTouch;
+        //touchManager.OnZoomStart += ZoomStart;
+        //touchManager.OnZoomEnd += ZoomEnd;
     }
 
     private void OnDisable()
     {
-        touchManager.OnTap -= Tap;
-        touchManager.OnSlowTap -= SlowTap;
-        touchManager.OnStartTouch -= StartTouch;
-        touchManager.OnEndTouch -= EndTouch;
+        touchManager.OnPrimaryTap -= PrimaryTap;
+        touchManager.OnPrimarySlowTap -= PrimarySlowTap;
+        touchManager.OnStartPrimaryTouch -= StartPrimaryTouch;
+        touchManager.OnEndPrimaryTouch -= EndPrimaryTouch;
+        touchManager.OnStartSecondaryTouch -= StartSecondaryTouch;
+        touchManager.OnEndSecondaryTouch -= EndSecondaryTouch;
+        //touchManager.OnZoomStart -= ZoomStart;
+        //touchManager.OnZoomEnd -= ZoomEnd;
     }
 
     private void Start()
@@ -64,32 +87,34 @@ public class GameManager : Singleton<GameManager>
         
         DrawField();
 
-        RestartMenu.SetActive(false);
+        gameOverMenu.SetActive(false);
+        startTitle.gameObject.SetActive(true);
     }
 
     private void Update()
     {
-        if (isTouching)
+        if (isPrimaryTouching && !isSecondaryTouching)
         {
-            mainCamera.transform.position += startTouchWorldPoint - touchManager.TouchWorldPoint;
+            mainCamera.transform.position += startPrimaryTouchWorldPoint - touchManager.PrimaryTouchWorldPoint;
         }
 
         if (!field.IsGameStarted)
         {
-            RestartMenu.SetActive(true);
+            gameOverMenu.SetActive(true);
         }
     }
     
-    private void Tap(Vector3 worldPoint)
+    private void PrimaryTap(Vector3 worldPoint)
     {
         if (isFirstTouch)
         {
             isFirstTouch = false;
-            SlowTap(worldPoint);
+            startTitle.gameObject.SetActive(false);
+            PrimarySlowTap(worldPoint);
             return;
         }
         
-        if (worldPoint != startTouchWorldPoint) return;
+        if (worldPoint != startPrimaryTouchWorldPoint) return;
         
         var cellPosition = WorldPointToCellPosition(worldPoint);
         
@@ -101,11 +126,11 @@ public class GameManager : Singleton<GameManager>
         DrawField();
     }
 
-    private void SlowTap(Vector3 worldPoint)
+    private void PrimarySlowTap(Vector3 worldPoint)
     {
         if (isFirstTouch) return;
         
-        if (worldPoint != startTouchWorldPoint) return;
+        if (worldPoint != startPrimaryTouchWorldPoint) return;
         
         var cellPosition = WorldPointToCellPosition(worldPoint);
 
@@ -114,18 +139,56 @@ public class GameManager : Singleton<GameManager>
         DrawField();
     }
 
-    private void StartTouch(Vector3 worldPoint, float time)
+    private void StartPrimaryTouch(Vector3 worldPoint)
     {
-        isTouching = true;
-        startTouchWorldPoint = worldPoint;
+        isPrimaryTouching = true;
+        startPrimaryTouchWorldPoint = worldPoint;
     }
     
-    private void EndTouch(Vector3 worldPoint, float time)
+    private void EndPrimaryTouch(Vector3 worldPoint)
     {
-        isTouching = false;
-        endTouchWorldPoint = worldPoint;
+        isPrimaryTouching = false;
+    }
 
-        Debug.DrawLine(startTouchWorldPoint, endTouchWorldPoint, Color.red, 10.0f);
+    private void StartSecondaryTouch(Vector3 worldPoint)
+    {
+        isSecondaryTouching = true;
+        startSecondaryTouchWorldPoint = worldPoint;
+    }
+    
+    private void EndSecondaryTouch(Vector3 worldPoint)
+    {
+        isSecondaryTouching = false;
+    }
+
+    private void ZoomStart()
+    {
+        zoomCoroutine = StartCoroutine(ZoomDetection());
+    }
+    
+    private void ZoomEnd()
+    {
+        StopCoroutine(zoomCoroutine);
+    }
+
+    private IEnumerator ZoomDetection()
+    {
+        var previousDistance = touchManager.GetDistanceBetweenTwoTouchPositions();
+        
+        while (true)
+        {
+            var distance = touchManager.GetDistanceBetweenTwoTouchPositions();
+            var difference = distance - previousDistance;
+
+            mainCamera.transform.position =
+                (touchManager.PrimaryTouchWorldPoint + touchManager.SecondaryTouchWorldPoint) / 2;
+            mainCamera.orthographicSize = Mathf.Clamp(mainCamera.orthographicSize - difference * zoomSensitivity,
+                zoomMin, zoomMax);
+
+            previousDistance = distance;
+
+            yield return null;
+        }
     }
 
     private void SetCameraOnCenter()

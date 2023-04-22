@@ -7,8 +7,8 @@ public class Field : MonoBehaviour
     [field: SerializeField] public int Width { get; private set; }
     [field: SerializeField] public int Height { get; private set; }
     [field: SerializeField] public int MinesCount { get; private set; }
-    [field: SerializeField] public int FlagsCount { get; private set; }
     [field: SerializeField] public bool IsGameStarted { get; private set; }
+    public int FlagsCount { get; private set; }
     private bool areMinesGenerated;
     private Cell[,] cells;
 
