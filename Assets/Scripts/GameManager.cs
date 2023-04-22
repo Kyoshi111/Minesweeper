@@ -3,7 +3,6 @@ using System.Globalization;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.Serialization;
 using UnityEngine.Tilemaps;
 
 public class GameManager : Singleton<GameManager>
@@ -95,7 +94,22 @@ public class GameManager : Singleton<GameManager>
     {
         if (isPrimaryTouching && !isSecondaryTouching)
         {
-            mainCamera.transform.position += startPrimaryTouchWorldPoint - touchManager.PrimaryTouchWorldPoint;
+            var cameraHeight = mainCamera.orthographicSize * 2;
+            var cameraWidth = cameraHeight * mainCamera.aspect;
+            var position = mainCamera.transform.position;
+            var targetPosition = position + (startPrimaryTouchWorldPoint - touchManager.PrimaryTouchWorldPoint);
+            
+            var leftPivot = cameraWidth / 2;
+            var rightPivot = field.Width - cameraWidth / 2;
+            var topPivot = field.Height - cameraHeight / 2;
+            var bottomPivot = cameraHeight / 2;
+
+            position = new Vector3(
+                Mathf.Clamp(targetPosition.x, leftPivot, rightPivot),
+                Mathf.Clamp(targetPosition.y, bottomPivot, topPivot),
+                targetPosition.z);
+            
+            mainCamera.transform.position = position;
         }
 
         if (!field.IsGameStarted)
