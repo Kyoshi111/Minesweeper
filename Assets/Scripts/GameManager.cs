@@ -62,8 +62,8 @@ public class GameManager : Singleton<GameManager>
         touchManager.OnEndPrimaryTouch += EndPrimaryTouch;
         touchManager.OnStartSecondaryTouch += StartSecondaryTouch;
         touchManager.OnEndSecondaryTouch += EndSecondaryTouch;
-        //touchManager.OnZoomStart += ZoomStart;
-        //touchManager.OnZoomEnd += ZoomEnd;
+        touchManager.OnZoomStart += ZoomStart;
+        touchManager.OnZoomEnd += ZoomEnd;
     }
 
     private void OnDisable()
@@ -74,8 +74,8 @@ public class GameManager : Singleton<GameManager>
         touchManager.OnEndPrimaryTouch -= EndPrimaryTouch;
         touchManager.OnStartSecondaryTouch -= StartSecondaryTouch;
         touchManager.OnEndSecondaryTouch -= EndSecondaryTouch;
-        //touchManager.OnZoomStart -= ZoomStart;
-        //touchManager.OnZoomEnd -= ZoomEnd;
+        touchManager.OnZoomStart -= ZoomStart;
+        touchManager.OnZoomEnd -= ZoomEnd;
     }
 
     private void Start()
@@ -194,8 +194,8 @@ public class GameManager : Singleton<GameManager>
             var distance = touchManager.GetDistanceBetweenTwoTouchPositions();
             var difference = distance - previousDistance;
 
-            mainCamera.transform.position =
-                (touchManager.PrimaryTouchWorldPoint + touchManager.SecondaryTouchWorldPoint) / 2;
+            //mainCamera.transform.position =
+            //    (touchManager.PrimaryTouchWorldPoint + touchManager.SecondaryTouchWorldPoint) / 2;
             mainCamera.orthographicSize = Mathf.Clamp(mainCamera.orthographicSize - difference * zoomSensitivity,
                 zoomMin, zoomMax);
 
