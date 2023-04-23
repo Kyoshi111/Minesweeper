@@ -14,6 +14,7 @@ public class GameManager : Singleton<GameManager>
     [SerializeField] private TextMeshProUGUI startTitle;
     [SerializeField] private TextMeshProUGUI zoomSensitivityTitle;
     [SerializeField] private GameObject gameOverMenu;
+    [SerializeField] private GameObject winMenu;
     [SerializeField] private float zoomMin;
     [SerializeField] private float zoomMax;
     [SerializeField] private float zoomSensitivity;
@@ -87,6 +88,7 @@ public class GameManager : Singleton<GameManager>
         DrawField();
 
         gameOverMenu.SetActive(false);
+        winMenu.SetActive(false);
         startTitle.gameObject.SetActive(true);
     }
 
@@ -112,9 +114,14 @@ public class GameManager : Singleton<GameManager>
             mainCamera.transform.position = position;
         }
 
-        if (!field.IsGameStarted)
+        switch (field.GameState)
         {
-            gameOverMenu.SetActive(true);
+            case GameState.Over:
+                gameOverMenu.SetActive(true);
+                break;
+            case GameState.Win:
+                winMenu.SetActive(true);
+                break;
         }
     }
     

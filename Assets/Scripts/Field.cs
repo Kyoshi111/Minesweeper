@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -7,8 +8,8 @@ public class Field : MonoBehaviour
     [field: SerializeField] public int Width { get; private set; }
     [field: SerializeField] public int Height { get; private set; }
     [field: SerializeField] public int MinesCount { get; private set; }
-    [field: SerializeField] public bool IsGameStarted { get; private set; }
     public int FlagsCount { get; private set; }
+    public GameState GameState;
     private bool areMinesGenerated;
     private Cell[,] cells;
 
@@ -21,13 +22,13 @@ public class Field : MonoBehaviour
     public void StartGame()
     {
         GenerateCells();
-        IsGameStarted = true;
+        GameState = GameState.Continues;
         areMinesGenerated = false;
     }
 
     public bool TrySetParams(int width, int height, int minesCount)
     {
-        if (IsGameStarted) return false;
+        if (GameState == GameState.Continues) return false;
 
         Width = width;
         Height = height;
@@ -118,6 +119,20 @@ public class Field : MonoBehaviour
             cells[cellX, cellY].IsFlagged = true;
             FlagsCount++;
         }
+        
+        if (MinesCount == FlagsCount) CheckWin();
+    }
+
+    private void CheckWin()
+    {
+        if (MinesCount != FlagsCount) return;
+
+        if (cells
+            .Cast<Cell>()
+            .Any(cell => cell is { HasMine: true, IsFlagged: false }))
+            return;
+
+        GameState = GameState.Win;
     }
 
     private void Explode(int cellX, int cellY)
@@ -136,7 +151,7 @@ public class Field : MonoBehaviour
             cells[x, y].IsRevealed = true;
         }
 
-        IsGameStarted = false;
+        GameState = GameState.Over;
     }
 
     private void GenerateMinesExcluding3X3At(int cellX, int cellY)
