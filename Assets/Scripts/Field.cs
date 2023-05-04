@@ -9,7 +9,7 @@ public class Field : MonoBehaviour
     [field: SerializeField] public int Height { get; private set; }
     [field: SerializeField] public int MinesCount { get; private set; }
     public int FlagsCount { get; private set; }
-    public GameState GameState;
+    public GameState gameState = GameState.NotStarted;
     private bool areMinesGenerated;
     private Cell[,] cells;
 
@@ -22,13 +22,13 @@ public class Field : MonoBehaviour
     public void StartGame()
     {
         GenerateCells();
-        GameState = GameState.Continues;
+        gameState = GameState.Continues;
         areMinesGenerated = false;
     }
 
     public bool TrySetParams(int width, int height, int minesCount)
     {
-        if (GameState == GameState.Continues) return false;
+        if (gameState == GameState.Continues) return false;
 
         Width = width;
         Height = height;
@@ -58,6 +58,28 @@ public class Field : MonoBehaviour
         {
             RevealAround(cellX, cellY);
         }
+    }
+    
+    public void FlagOrUnflag(int cellX, int cellY)
+    {
+        if (!areMinesGenerated ||
+            !AreValidCoordinates(cellX, cellY) ||
+            cells[cellX, cellY].IsRevealed ||
+            cells[cellX, cellY].IsExploded)
+            return;
+
+        if (cells[cellX, cellY].IsFlagged)
+        {
+            cells[cellX, cellY].IsFlagged = false;
+            FlagsCount--;
+        }
+        else
+        {
+            cells[cellX, cellY].IsFlagged = true;
+            FlagsCount++;
+        }
+        
+        if (MinesCount == FlagsCount) CheckWin();
     }
     
     private void GenerateCells()
@@ -100,39 +122,16 @@ public class Field : MonoBehaviour
             Reveal(cellX + i, cellY + j);
         }
     }
-    
-    public void FlagOrUnflag(int cellX, int cellY)
-    {
-        if (!areMinesGenerated ||
-            !AreValidCoordinates(cellX, cellY) ||
-            cells[cellX, cellY].IsRevealed ||
-            cells[cellX, cellY].IsExploded)
-            return;
-
-        if (cells[cellX, cellY].IsFlagged)
-        {
-            cells[cellX, cellY].IsFlagged = false;
-            FlagsCount--;
-        }
-        else
-        {
-            cells[cellX, cellY].IsFlagged = true;
-            FlagsCount++;
-        }
-        
-        if (MinesCount == FlagsCount) CheckWin();
-    }
 
     private void CheckWin()
     {
-        if (MinesCount != FlagsCount) return;
+        if (MinesCount != FlagsCount ||
+            gameState != GameState.Continues ||
+            cells
+                .Cast<Cell>()
+                .Any(cell => cell is { HasMine: true, IsFlagged: false })) return;
 
-        if (cells
-            .Cast<Cell>()
-            .Any(cell => cell is { HasMine: true, IsFlagged: false }))
-            return;
-
-        GameState = GameState.Win;
+        gameState = GameState.Win;
     }
 
     private void Explode(int cellX, int cellY)
@@ -151,7 +150,7 @@ public class Field : MonoBehaviour
             cells[x, y].IsRevealed = true;
         }
 
-        GameState = GameState.Over;
+        gameState = GameState.Over;
     }
 
     private void GenerateMinesExcluding3X3At(int cellX, int cellY)
