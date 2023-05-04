@@ -779,7 +779,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 2
-  m_BackGroundColor: {r: 0, g: 0, b: 0, a: 0}
+  m_BackGroundColor: {r: 0.059709217, g: 0, b: 0.122641504, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
@@ -2111,7 +2111,7 @@ MonoBehaviour:
   <Width>k__BackingField: 100
   <Height>k__BackingField: 200
   <MinesCount>k__BackingField: 3000
-  GameState: 0
+  gameState: 0
 --- !u!1 &1635537507
 GameObject:
   m_ObjectHideFlags: 0

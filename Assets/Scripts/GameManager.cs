@@ -96,19 +96,12 @@ public class GameManager : Singleton<GameManager>
     {
         if (isPrimaryTouching && !isSecondaryTouching)
         {
-            var cameraHeight = mainCamera.orthographicSize * 2;
-            var cameraWidth = cameraHeight * mainCamera.aspect;
             var position = mainCamera.transform.position;
             var targetPosition = position + (startPrimaryTouchWorldPoint - touchManager.PrimaryTouchWorldPoint);
-            
-            var leftPivot = cameraWidth / 2;
-            var rightPivot = field.Width - cameraWidth / 2;
-            var topPivot = field.Height - cameraHeight / 2;
-            var bottomPivot = cameraHeight / 2;
 
             position = new Vector3(
-                Mathf.Clamp(targetPosition.x, leftPivot, rightPivot),
-                Mathf.Clamp(targetPosition.y, bottomPivot, topPivot),
+                Mathf.Clamp(targetPosition.x, 0, field.Width),
+                Mathf.Clamp(targetPosition.y, 0, field.Height),
                 targetPosition.z);
             
             mainCamera.transform.position = position;
