@@ -191,9 +191,7 @@ public class GameManager : Singleton<GameManager>
         {
             var distance = _touchManager.GetDistanceBetweenTwoTouchPositions();
             var difference = distance - previousDistance;
-
-            //mainCamera.transform.position =
-            //    (touchManager.PrimaryTouchWorldPoint + touchManager.SecondaryTouchWorldPoint) / 2;
+            
             _mainCamera.orthographicSize = Mathf.Clamp(_mainCamera.orthographicSize - difference * zoomSensitivity,
                 zoomMin, zoomMax);
 
