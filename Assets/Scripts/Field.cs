@@ -9,7 +9,8 @@ public class Field : MonoBehaviour
     [field: SerializeField] public int Height { get; private set; }
     [field: SerializeField] public int MinesCount { get; private set; }
     public int FlagsCount { get; private set; }
-    public GameState gameState = GameState.NotStarted;
+    public GameState GameState { get; private set; } = GameState.NotStarted;
+    
     private bool _areMinesGenerated;
     private Cell[,] _cells;
 
@@ -23,13 +24,13 @@ public class Field : MonoBehaviour
     public void StartGame()
     {
         GenerateCells();
-        gameState = GameState.Continues;
+        GameState = GameState.Continues;
         _areMinesGenerated = false;
     }
 
     public bool TrySetParams(int width, int height, int minesCount)
     {
-        if (gameState == GameState.Continues) return false;
+        if (GameState == GameState.Continues) return false;
 
         Width = width;
         Height = height;
@@ -131,12 +132,12 @@ public class Field : MonoBehaviour
     private void CheckWin()
     {
         if (MinesCount != FlagsCount ||
-            gameState != GameState.Continues ||
+            GameState != GameState.Continues ||
             _cells
                 .Cast<Cell>()
                 .Any(cell => cell is { HasMine: true, IsFlagged: false })) return;
 
-        gameState = GameState.Win;
+        GameState = GameState.Win;
     }
 
     private void Explode(int cellX, int cellY)
@@ -154,7 +155,7 @@ public class Field : MonoBehaviour
             _cells[x, y].IsRevealed = true;
         }
 
-        gameState = GameState.Over;
+        GameState = GameState.Over;
     }
 
     private void GenerateMinesExcluding3X3At(int cellX, int cellY)

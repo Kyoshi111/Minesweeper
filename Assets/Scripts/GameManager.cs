@@ -106,7 +106,7 @@ public class GameManager : Singleton<GameManager>
             _mainCamera.transform.position = position;
         }
 
-        switch (field.gameState)
+        switch (field.GameState)
         {
             case GameState.Over:
                 gameOverMenu.SetActive(true);
