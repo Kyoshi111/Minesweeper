@@ -143,9 +143,8 @@ public class Field : MonoBehaviour
         for (var x = 0; x < Width; x++)
         for (var y = 0; y < Height; y++)
         {
-            if (cells[x, y].IsFlagged &&
-                cells[x, y].HasMine)
-                cells[x, y].IsFlagged = false;
+            if (!cells[x, y].HasMine) continue;
+            if (cells[x, y].IsFlagged) cells[x, y].IsFlagged = false;
             
             cells[x, y].IsRevealed = true;
         }
