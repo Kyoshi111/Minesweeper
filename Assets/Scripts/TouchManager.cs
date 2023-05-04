@@ -24,46 +24,46 @@ public class TouchManager : Singleton<TouchManager>
     #endregion
     
     public Vector3 PrimaryTouchWorldPoint => 
-        mainCamera.ScreenToWorldPoint(primaryPositionAction.ReadValue<Vector2>());
+        _mainCamera.ScreenToWorldPoint(_primaryPositionAction.ReadValue<Vector2>());
     
     public Vector3 SecondaryTouchWorldPoint => 
-        mainCamera.ScreenToWorldPoint(secondaryPositionAction.ReadValue<Vector2>());
+        _mainCamera.ScreenToWorldPoint(_secondaryPositionAction.ReadValue<Vector2>());
 
-    private Camera mainCamera;
-    private PlayerInput playerInput;
-    private InputAction primaryPositionAction;
-    private InputAction secondaryPositionAction;
-    private InputAction primaryTapAction;
-    private InputAction primarySlowTapAction;
-    private InputAction primaryPressAction;
-    private InputAction secondaryPressAction;
+    private Camera _mainCamera;
+    private PlayerInput _playerInput;
+    private InputAction _primaryPositionAction;
+    private InputAction _secondaryPositionAction;
+    private InputAction _primaryTapAction;
+    private InputAction _primarySlowTapAction;
+    private InputAction _primaryPressAction;
+    private InputAction _secondaryPressAction;
 
     public float GetDistanceBetweenTwoTouchPositions() =>
-        Vector2.Distance(primaryPositionAction.ReadValue<Vector2>(),
-            secondaryPositionAction.ReadValue<Vector2>());
+        Vector2.Distance(_primaryPositionAction.ReadValue<Vector2>(),
+            _secondaryPositionAction.ReadValue<Vector2>());
     
     private void Awake()
     {
-        mainCamera = Camera.main;
-        playerInput = GetComponent<PlayerInput>();
-        primaryPositionAction = playerInput.actions["PrimaryTouchPosition"];
-        secondaryPositionAction = playerInput.actions["SecondaryTouchPosition"];
-        primaryTapAction = playerInput.actions["PrimaryTouchTap"];
-        primarySlowTapAction = playerInput.actions["PrimaryTouchSlowTap"];
-        primaryPressAction = playerInput.actions["PrimaryTouchPress"];
-        secondaryPressAction = playerInput.actions["SecondaryTouchPress"];
+        _mainCamera = Camera.main;
+        _playerInput = GetComponent<PlayerInput>();
+        _primaryPositionAction = _playerInput.actions["PrimaryTouchPosition"];
+        _secondaryPositionAction = _playerInput.actions["SecondaryTouchPosition"];
+        _primaryTapAction = _playerInput.actions["PrimaryTouchTap"];
+        _primarySlowTapAction = _playerInput.actions["PrimaryTouchSlowTap"];
+        _primaryPressAction = _playerInput.actions["PrimaryTouchPress"];
+        _secondaryPressAction = _playerInput.actions["SecondaryTouchPress"];
     }
 
     private void Start()
     {
-        primaryTapAction.performed += PrimaryTap;
-        primarySlowTapAction.performed += PrimarySlowTap;
-        primaryPressAction.started += StartPrimaryTouch;
-        primaryPressAction.canceled += EndPrimaryTouch;
-        secondaryPressAction.started += StartSecondaryTouch;
-        secondaryPressAction.canceled += EndSecondaryTouch;
-        secondaryPressAction.started += StartZoom;
-        secondaryPressAction.canceled += EndZoom;
+        _primaryTapAction.performed += PrimaryTap;
+        _primarySlowTapAction.performed += PrimarySlowTap;
+        _primaryPressAction.started += StartPrimaryTouch;
+        _primaryPressAction.canceled += EndPrimaryTouch;
+        _secondaryPressAction.started += StartSecondaryTouch;
+        _secondaryPressAction.canceled += EndSecondaryTouch;
+        _secondaryPressAction.started += StartZoom;
+        _secondaryPressAction.canceled += EndZoom;
     }
 
     private void PrimaryTap(InputAction.CallbackContext context)

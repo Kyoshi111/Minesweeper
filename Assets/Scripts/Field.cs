@@ -10,20 +10,20 @@ public class Field : MonoBehaviour
     [field: SerializeField] public int MinesCount { get; private set; }
     public int FlagsCount { get; private set; }
     public GameState gameState = GameState.NotStarted;
-    private bool areMinesGenerated;
-    private Cell[,] cells;
+    private bool _areMinesGenerated;
+    private Cell[,] _cells;
 
-    public int MinesAround(int cellX, int cellY) => cells[cellX, cellY].MinesAround;
-    public bool IsFlagged(int cellX, int cellY) => cells[cellX, cellY].IsFlagged;
-    public bool IsExploded(int cellX, int cellY) => cells[cellX, cellY].IsExploded;
-    public bool IsRevealed(int cellX, int cellY) => cells[cellX, cellY].IsRevealed;
-    public bool HasMine(int cellX, int cellY) => cells[cellX, cellY].HasMine;
+    public int MinesAround(int cellX, int cellY) => _cells[cellX, cellY].MinesAround;
+    public bool IsFlagged(int cellX, int cellY) => _cells[cellX, cellY].IsFlagged;
+    public bool IsExploded(int cellX, int cellY) => _cells[cellX, cellY].IsExploded;
+    public bool IsRevealed(int cellX, int cellY) => _cells[cellX, cellY].IsRevealed;
+    public bool HasMine(int cellX, int cellY) => _cells[cellX, cellY].HasMine;
 
     public void StartGame()
     {
         GenerateCells();
         gameState = GameState.Continues;
-        areMinesGenerated = false;
+        _areMinesGenerated = false;
     }
 
     public bool TrySetParams(int width, int height, int minesCount)
@@ -40,21 +40,21 @@ public class Field : MonoBehaviour
     public void Reveal(int cellX, int cellY)
     {
         if (!AreValidCoordinates(cellX, cellY) ||
-            cells[cellX, cellY].IsFlagged)
+            _cells[cellX, cellY].IsFlagged)
             return;
         
-        if (!areMinesGenerated) GenerateMinesExcluding3X3At(cellX, cellY);
+        if (!_areMinesGenerated) GenerateMinesExcluding3X3At(cellX, cellY);
 
-        cells[cellX, cellY].IsRevealed = true;
+        _cells[cellX, cellY].IsRevealed = true;
 
-        if (cells[cellX, cellY].HasMine) Explode(cellX, cellY);
+        if (_cells[cellX, cellY].HasMine) Explode(cellX, cellY);
         
-        else if (cells[cellX, cellY].MinesAround == 0) RevealAround(cellX, cellY);
+        else if (_cells[cellX, cellY].MinesAround == 0) RevealAround(cellX, cellY);
     }
 
     public void RevealAroundNumber(int cellX, int cellY)
     {
-        if (cells[cellX, cellY].IsRevealed && cells[cellX, cellY].MinesAround <= FlagsAround(cellX, cellY))
+        if (_cells[cellX, cellY].IsRevealed && _cells[cellX, cellY].MinesAround <= FlagsAround(cellX, cellY))
         {
             RevealAround(cellX, cellY);
         }
@@ -62,20 +62,20 @@ public class Field : MonoBehaviour
     
     public void FlagOrUnflag(int cellX, int cellY)
     {
-        if (!areMinesGenerated ||
+        if (!_areMinesGenerated ||
             !AreValidCoordinates(cellX, cellY) ||
-            cells[cellX, cellY].IsRevealed ||
-            cells[cellX, cellY].IsExploded)
+            _cells[cellX, cellY].IsRevealed ||
+            _cells[cellX, cellY].IsExploded)
             return;
 
-        if (cells[cellX, cellY].IsFlagged)
+        if (_cells[cellX, cellY].IsFlagged)
         {
-            cells[cellX, cellY].IsFlagged = false;
+            _cells[cellX, cellY].IsFlagged = false;
             FlagsCount--;
         }
         else
         {
-            cells[cellX, cellY].IsFlagged = true;
+            _cells[cellX, cellY].IsFlagged = true;
             FlagsCount++;
         }
         
@@ -84,15 +84,15 @@ public class Field : MonoBehaviour
     
     private void GenerateCells()
     {
-        cells = new Cell[Width, Height];
+        _cells = new Cell[Width, Height];
         
         for (var x = 0; x < Width; x++)
         for (var y = 0; y < Height; y++)
         {
-            cells[x, y] = new Cell(x, y);
+            _cells[x, y] = new Cell(x, y);
         }
 
-        areMinesGenerated = false;
+        _areMinesGenerated = false;
     }
 
     private int FlagsAround(int cellX, int cellY)
@@ -104,7 +104,7 @@ public class Field : MonoBehaviour
         {
             if ((i, j) == (0, 0) || !AreValidCoordinates(cellX + i, cellY + j)) continue;
 
-            if (cells[cellX + i, cellY + j].IsFlagged) flagsAround++;
+            if (_cells[cellX + i, cellY + j].IsFlagged) flagsAround++;
         }
 
         return flagsAround;
@@ -116,7 +116,7 @@ public class Field : MonoBehaviour
         for (var j = -1; j <= 1; j++)
         {
             if (!AreValidCoordinates(cellX + i, cellY + j) ||
-                cells[cellX + i, cellY + j].IsRevealed)
+                _cells[cellX + i, cellY + j].IsRevealed)
                 continue;
             
             Reveal(cellX + i, cellY + j);
@@ -127,7 +127,7 @@ public class Field : MonoBehaviour
     {
         if (MinesCount != FlagsCount ||
             gameState != GameState.Continues ||
-            cells
+            _cells
                 .Cast<Cell>()
                 .Any(cell => cell is { HasMine: true, IsFlagged: false })) return;
 
@@ -138,15 +138,15 @@ public class Field : MonoBehaviour
     {
         if (!AreValidCoordinates(cellX, cellY)) return;
 
-        cells[cellX, cellY].IsExploded = true;
+        _cells[cellX, cellY].IsExploded = true;
         
         for (var x = 0; x < Width; x++)
         for (var y = 0; y < Height; y++)
         {
-            if (!cells[x, y].HasMine) continue;
-            if (cells[x, y].IsFlagged) cells[x, y].IsFlagged = false;
+            if (!_cells[x, y].HasMine) continue;
+            if (_cells[x, y].IsFlagged) _cells[x, y].IsFlagged = false;
             
-            cells[x, y].IsRevealed = true;
+            _cells[x, y].IsRevealed = true;
         }
 
         gameState = GameState.Over;
@@ -161,17 +161,17 @@ public class Field : MonoBehaviour
             var x = Random.Range(0, Width);
             var y = Random.Range(0, Height);
             
-            if (cells[x, y].HasMine ||
+            if (_cells[x, y].HasMine ||
                 (Math.Abs(x - cellX) <= 1 && Math.Abs(y - cellY) <= 1))
                 continue;
 
-            cells[x, y].HasMine = true;
+            _cells[x, y].HasMine = true;
             count++;
             
             IncreaseNumbersAround(x, y);
         }
 
-        areMinesGenerated = true;
+        _areMinesGenerated = true;
     }
     
     private void IncreaseNumbersAround(int cellX, int cellY)
@@ -181,10 +181,10 @@ public class Field : MonoBehaviour
         {
             if ((i == 0 && j == 0) ||
                 !AreValidCoordinates(cellX + i, cellY + j) ||
-                cells[cellX + i, cellY + j].HasMine)
+                _cells[cellX + i, cellY + j].HasMine)
                 continue;
 
-            cells[cellX + i, cellY + j].MinesAround++;
+            _cells[cellX + i, cellY + j].MinesAround++;
         }
     }
 
