@@ -13,11 +13,12 @@ public class Field : MonoBehaviour
     private bool _areMinesGenerated;
     private Cell[,] _cells;
 
-    public int MinesAround(int cellX, int cellY) => _cells[cellX, cellY].MinesAround;
-    public bool IsFlagged(int cellX, int cellY) => _cells[cellX, cellY].IsFlagged;
-    public bool IsExploded(int cellX, int cellY) => _cells[cellX, cellY].IsExploded;
-    public bool IsRevealed(int cellX, int cellY) => _cells[cellX, cellY].IsRevealed;
-    public bool HasMine(int cellX, int cellY) => _cells[cellX, cellY].HasMine;
+    public int MinesAround(int cellX, int cellY) =>
+        AreValidCoordinates(cellX, cellY) ? _cells[cellX, cellY].MinesAround : 0;
+    public bool IsFlagged(int cellX, int cellY) => AreValidCoordinates(cellX, cellY) && _cells[cellX, cellY].IsFlagged;
+    public bool IsExploded(int cellX, int cellY) => AreValidCoordinates(cellX, cellY) && _cells[cellX, cellY].IsExploded;
+    public bool IsRevealed(int cellX, int cellY) => AreValidCoordinates(cellX, cellY) && _cells[cellX, cellY].IsRevealed;
+    public bool HasMine(int cellX, int cellY) => AreValidCoordinates(cellX, cellY) && _cells[cellX, cellY].HasMine;
 
     public void StartGame()
     {
@@ -54,7 +55,11 @@ public class Field : MonoBehaviour
 
     public void RevealAroundNumber(int cellX, int cellY)
     {
-        if (_cells[cellX, cellY].IsRevealed && _cells[cellX, cellY].MinesAround <= FlagsAround(cellX, cellY))
+        if (!AreValidCoordinates(cellX, cellY) &&
+            !_cells[cellX, cellY].IsFlagged &&
+            !_cells[cellX, cellY].HasMine &&
+            _cells[cellX, cellY].IsRevealed &&
+            _cells[cellX, cellY].MinesAround <= FlagsAround(cellX, cellY))
         {
             RevealAround(cellX, cellY);
         }
